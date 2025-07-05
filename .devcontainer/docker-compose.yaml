@@ -1,0 +1,17 @@
+services:
+  devcontainer:
+    image: "talent-management-app-dev"
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    user: vscode
+    command: /bin/sh -c "while sleep 1000; do true; done"
+    ports:
+      - "3000:3000" # for frontend
+      - "8080:8080" # for backend
+    volumes:
+      - type: bind
+        source: ..
+        target: /workspace
+    env_file:
+      - devcontainer.env

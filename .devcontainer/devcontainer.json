@@ -1,0 +1,68 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+  "name": "[WHI Intern] Talent management app",
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "remoteUser": "vscode",
+  "postAttachCommand": ".devcontainer/postAttachCommand.sh",
+
+  "features": {
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
+    "ghcr.io/guiyomh/features/vim:0": {}
+  },
+
+  "mounts": [
+    {
+      "type": "bind",
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.aws",
+      "target": "/home/vscode/.aws"
+    },
+    {
+      "type": "bind",
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.ssh",
+      "target": "/home/vscode/.ssh"
+    },
+    {
+      "type": "volume",
+      "source": "frontend-node_modules",
+      "target": "${containerWorkspaceFolder}/frontend/node_modules"
+    },
+    {
+      "type": "volume",
+      "source": "backend-ts-node_modules",
+      "target": "${containerWorkspaceFolder}/backend-ts/node_modules"
+    },
+    {
+      "type": "volume",
+      "source": "cdk-ts-node_modules",
+      "target": "${containerWorkspaceFolder}/cdk-ts/node_modules"
+    }
+  ],
+
+  "containerEnv": {},
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[typescript]": {
+          "prettier.printWidth": 80,
+          "prettier.tabWidth": 2,
+          "prettier.useTabs": false,
+          "prettier.semi": true,
+          "prettier.singleQuote": false
+        }
+      },
+      "extensions": ["esbenp.prettier-vscode"]
+    }
+  }
+}

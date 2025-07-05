@@ -1,0 +1,29 @@
+{
+  "name": "backend-ts",
+  "version": "0.1.0",
+  "main": "out/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node out/index.js",
+    "dev": "tsx watch src/index.ts",
+    "test": "jest"
+  },
+  "author": "YourName <you@example.com>",
+  "license": "ISC",
+  "description": "A simple talent management app",
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.788.0",
+    "@types/aws-lambda": "^8.10.149",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.14.1",
+    "express": "^5.1.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "io-ts": "^2.2.22"
+  }
+}
