@@ -1,4 +1,4 @@
-import * as t from 'io-ts';
+import * as t from "io-ts";
 
 export const EmployeeT = t.type({
   id: t.string,
