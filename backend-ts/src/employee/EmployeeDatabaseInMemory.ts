@@ -33,7 +33,7 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
     return this.employees.get(id);
   }
 
-  async getEmployees(filterText: string): Promise<Employee[]> {
+ async getEmployees(filterText: string): Promise<Employee[]> {
     const employees = Array.from(this.employees.values());
     if (filterText === "") {
       return employees;
