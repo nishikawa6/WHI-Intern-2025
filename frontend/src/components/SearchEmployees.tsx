@@ -2,6 +2,7 @@
 import { Paper, TextField } from "@mui/material";
 import { useState } from "react";
 import { EmployeeListContainer } from "./EmployeeListContainer";
+import { RegisterationEmployeeButton } from "./RegistrationEmployeeButton";
 
 export function SearchEmployees() {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -20,6 +21,7 @@ export function SearchEmployees() {
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
+      <RegisterationEmployeeButton />
       <EmployeeListContainer
         key="employeesContainer"
         filterText={searchKeyword}
