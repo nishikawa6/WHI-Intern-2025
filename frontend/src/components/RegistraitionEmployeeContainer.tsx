@@ -40,8 +40,6 @@ export function RegistrationEmployeeContainer() {
         <TextField
           {...register("name", { required: "名前は必須です" })}
           placeholder="名前を入力してください"
-          // value={inputName}
-          // onChange={(e) => setInputName(e.target.value)}
           fullWidth
         />
         {errors.name && (
@@ -58,8 +56,6 @@ export function RegistrationEmployeeContainer() {
             },
           })}
           placeholder="年齢を入力してください"
-          // value={inputAge}
-          // onChange={(e) => setInputAge(e.target.value)}
           fullWidth
         />
         {errors.age && (
@@ -77,10 +73,26 @@ export function RegistrationEmployeeContainer() {
           cursor: "pointer",
           marginTop: "20px",
         }}
-        onClick={handleSubmit((data: EmployeeFormData) => {
+        onClick={handleSubmit(async (data: EmployeeFormData) => {
           console.log("登録データ:", data);
           // ここでAPIにデータを送信する処理を追加
-          // 例: axios.post('/api/employees', data);
+          const response = await fetch("/api/employee/registration", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error("登録に失敗しました:", errorData);
+            alert("登録に失敗しました: " + errorData.message);
+          } else {
+            console.log("登録成功");
+            alert("登録が成功しました");
+            // /に移動
+            window.location.href = "/";
+          }
         })}
         disabled={!watch("name") || !watch("age")}
       >
