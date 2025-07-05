@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -14,7 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "タレントマネジメントシステム",
+  title: {
+    default: "タレントマネジメントシステム",
+    template: "タレントマネジメントシステム - %s",
+  },
   description: "シンプルなタレントマネジメントシステム",
 };
 
