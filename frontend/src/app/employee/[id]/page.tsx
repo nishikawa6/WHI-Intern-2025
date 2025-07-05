@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "従業員",
+  title: "社員詳細",
 };
 
 export default function EmployeePage() {
