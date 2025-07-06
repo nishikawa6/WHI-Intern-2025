@@ -2,8 +2,15 @@
 import PersonIcon from "@mui/icons-material/Person";
 import { Avatar, Box, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import Snackbar from "@mui/material/Snackbar";
+import { useState } from "react";
 
 interface EmployeeFormData {
+  name: string;
+  age: string;
+}
+
+interface EmployeeApiData {
   name: string;
   age: number;
   department: string;
@@ -11,12 +18,60 @@ interface EmployeeFormData {
 }
 
 export function RegistrationEmployeeContainer() {
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<EmployeeFormData>();
+  } = useForm<EmployeeFormData>({
+    defaultValues: {
+      name: "",
+      age: "",
+    },
+  });
+
+  const onSubmit = async (data: EmployeeFormData) => {
+    setIsOpenSnackbar(true);
+    setIsSubmitting(true);
+    setIsSuccess(false);
+
+    // フォームデータをAPI用のデータに変換
+    const apiData: EmployeeApiData = {
+      name: data.name,
+      age: parseInt(data.age, 10),
+    };
+
+    try {
+      // APIにデータを送信
+      const response = await fetch("/api/employee/registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(apiData),
+      });
+
+      // レスポンスのチェック
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("登録に失敗しました:", errorData);
+        setIsSuccess(false);
+        setIsSubmitting(false);
+      } else {
+        reset({ name: "", age: "" }); // フォームをリセット
+        setIsSuccess(true);
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+      setIsSubmitting(false);
+      setIsSuccess(false);
+    }
+  };
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -59,6 +114,7 @@ export function RegistrationEmployeeContainer() {
           })}
           placeholder="年齢を入力してください"
           fullWidth
+          type="number"
         />
         {errors.age && (
           <Typography color="error">{errors.age.message}</Typography>
@@ -106,27 +162,7 @@ export function RegistrationEmployeeContainer() {
           cursor: "pointer",
           marginTop: "20px",
         }}
-        onClick={handleSubmit(async (data: EmployeeFormData) => {
-          console.log("登録データ:", data);
-          // ここでAPIにデータを送信する処理を追加
-          const response = await fetch("/api/employee/registration", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.error("登録に失敗しました:", errorData);
-            alert("登録に失敗しました: " + errorData.message);
-          } else {
-            console.log("登録成功");
-            alert("登録が成功しました");
-            // /に移動
-            window.location.href = "/";
-          }
-        })}
+        OnClick={handleSubmit(onSubmit)}
         disabled={
           !watch("name") ||
           !watch("age") ||
@@ -136,6 +172,31 @@ export function RegistrationEmployeeContainer() {
       >
         登録
       </button>
+      <Snackbar
+        open={isOpenSnackbar && isSubmitting}
+        message="登録中..."
+        autoHideDuration={2000}
+        onClose={() => setIsSubmitting(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+      <Snackbar
+        open={isOpenSnackbar && !isSuccess}
+        message="登録に失敗しました"
+        autoHideDuration={2000}
+        onClick={() => {
+          setIsOpenSnackbar(false);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+      <Snackbar
+        open={isOpenSnackbar && isSuccess}
+        message="登録が成功しました"
+        autoHideDuration={2000}
+        onClose={() => {
+          setIsOpenSnackbar(false);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Paper>
   );
 }

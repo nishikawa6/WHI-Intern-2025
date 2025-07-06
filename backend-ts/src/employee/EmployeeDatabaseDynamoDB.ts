@@ -55,7 +55,11 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
       return [];
     }
     return items
-      .filter((item) => filterText === "" || item["name"].S === filterText)
+      .filter((item) => {
+        const name = (item["name"]?.S ?? "").toLowerCase();
+        const keyword = filterText.toLowerCase();
+        return keyword === "" || name.includes(keyword);
+      })
       .map((item) => {
         return {
           id: item["id"].S,
@@ -78,7 +82,6 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
       });
   }
 }
-
 function mapNullable<T, U>(
   value: T | null | undefined,
   mapper: (value: T) => U
