@@ -20,7 +20,9 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
     if (filterText === "") {
       return employees;
     }
-    return employees.filter((employee) => employee.name === filterText);
+    return employees.filter(
+      (employee) => employee.name.includes(filterText) // 部分一致に変更
+    );
   }
 
   async addEmployee(employeeId: string, employee: Employee): Promise<void> {
