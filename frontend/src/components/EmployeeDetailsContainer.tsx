@@ -20,7 +20,7 @@ const employeeFetcher = async (url: string): Promise<Employee> => {
 };
 
 export function EmployeeDetailsContainer() {
-  const params = useParams<{id: string}>();
+  const params = useParams<{ id: string }>();
   const id = params.id;
   const { data, error, isLoading } = useSWR<Employee, Error>(
     `/api/employees/${id}`,
