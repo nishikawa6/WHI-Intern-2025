@@ -3,6 +3,16 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { EmployeeListContainer } from "./EmployeeListContainer";
 import { Employee } from "../models/Employee";
 
+// コンソールエラーを抑制
+const originalError = console.error;
+beforeAll(() => {
+  console.error = jest.fn();
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 // SWRをモック
 jest.mock("swr", () => ({
   __esModule: true,
