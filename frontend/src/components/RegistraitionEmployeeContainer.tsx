@@ -8,6 +8,8 @@ import { useState } from "react";
 interface EmployeeFormData {
   name: string;
   age: string;
+  department: string;
+  position: string;
 }
 
 interface EmployeeApiData {
@@ -43,6 +45,8 @@ export function RegistrationEmployeeContainer() {
     const apiData: EmployeeApiData = {
       name: data.name,
       age: parseInt(data.age, 10),
+      department: data.department,
+      position: data.position,
     };
 
     try {
@@ -62,7 +66,7 @@ export function RegistrationEmployeeContainer() {
         setIsSuccess(false);
         setIsSubmitting(false);
       } else {
-        reset({ name: "", age: "" }); // フォームをリセット
+        reset({ name: "", age: "", department: "", position: "" }); // フォームをリセット
         setIsSuccess(true);
         setIsSubmitting(false);
       }
@@ -162,7 +166,7 @@ export function RegistrationEmployeeContainer() {
           cursor: "pointer",
           marginTop: "20px",
         }}
-        OnClick={handleSubmit(onSubmit)}
+        onClick={handleSubmit(onSubmit)}
         disabled={
           !watch("name") ||
           !watch("age") ||
