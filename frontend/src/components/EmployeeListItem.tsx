@@ -11,7 +11,10 @@ export type EmployeeListItemProps = {
 export function EmployeeListItem(prop: EmployeeListItemProps) {
   const employee = prop.employee;
   return (
-    <Link href={`/employee/${employee.id}`} style={{ textDecoration: "none" }}>
+    <Link
+      href={`/employee?id=${employee.id}`}
+      style={{ textDecoration: "none" }}
+    >
       <Card
         sx={{
           transition: "background-color 0.2s",

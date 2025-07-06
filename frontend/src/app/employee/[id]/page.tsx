@@ -14,17 +14,18 @@ export default function EmployeePage() {
       {/* Mark EmployeeDetailsContainer as CSR */}
       <Suspense>
         <button
-              style={{
-                backgroundColor: "rgb(60, 131, 212)",
-                color: "white",
-                padding: "10px 20px",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                marginBottom: "20px",
-              }}>
-              <Link href="/">検索画面へ戻る</Link>
-        </button> 
+          style={{
+            backgroundColor: "rgb(60, 131, 212)",
+            color: "white",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginBottom: "20px",
+          }}
+        >
+          <Link href="/">検索画面へ戻る</Link>
+        </button>
         <EmployeeDetailsContainer />
       </Suspense>
     </GlobalContainer>
