@@ -2,6 +2,8 @@ import {
   DynamoDBClient,
   GetItemCommand,
   GetItemCommandInput,
+  PutItemCommand,
+  PutItemCommandInput,
   ScanCommand,
   ScanCommandInput,
 } from "@aws-sdk/client-dynamodb";
@@ -32,10 +34,10 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     }
     const employee = {
       id: id,
-      name: item["name"].S,
-      age: mapNullable(item["age"].N, (value) => parseInt(value, 10)),
-      department: mapNullable(item["department"]?.S, (value) => value),
-      position: mapNullable(item["position"]?.S, (value) => value),
+      name: item["name"].S || "",
+      age: mapNullable(item["age"].N, (value) => parseInt(value, 10)) || 0,
+      department: mapNullable(item["department"]?.S, (value) => value) || "",
+      position: mapNullable(item["position"]?.S, (value) => value) || "",
     };
     const decoded = EmployeeT.decode(employee);
     if (isLeft(decoded)) {
@@ -64,9 +66,12 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
       })
       .map((item) => {
         return {
-          id: item["id"].S,
-          name: item["name"].S,
-          age: mapNullable(item["age"].N, (value) => parseInt(value, 10)),
+          id: item["id"].S || "",
+          name: item["name"].S || "",
+          age: mapNullable(item["age"].N, (value) => parseInt(value, 10)) || 0,
+          department:
+            mapNullable(item["department"]?.S, (value) => value) || "",
+          position: mapNullable(item["position"]?.S, (value) => value) || "",
         };
       })
       .flatMap((employee) => {
@@ -82,6 +87,19 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
           return [decoded.right];
         }
       });
+  }
+  async addEmployee(employeeId: string, employee: Employee): Promise<void> {
+    const input: PutItemCommandInput = {
+      TableName: this.tableName,
+      Item: {
+        id: { S: employeeId },
+        name: { S: employee.name },
+        age: { N: employee.age.toString() },
+        department: { S: employee.department },
+        position: { S: employee.position },
+      },
+    };
+    await this.client.send(new PutItemCommand(input));
   }
 }
 function mapNullable<T, U>(

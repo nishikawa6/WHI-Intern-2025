@@ -34,9 +34,9 @@ if [ "$DYNAMODB_ITEM_COUNT" -gt 0 ]; then
 else
     echo "Inserting initial data into DynamoDB."
     aws dynamodb put-item --table-name workshi-2025-tma-BackendDynamoDB \
-        --item '{"id":{"S":"1"},"name":{"S":"Jane Doe"},"age":{"N":"22"}}'
+        --item '{"id":{"S":"1"},"name":{"S":"Jane Doe"},"age":{"N":"22"},"department":{"S":"Engineering"},"position":{"S":"Software Engineer"}}'
     aws dynamodb put-item --table-name workshi-2025-tma-BackendDynamoDB \
-        --item '{"id":{"S":"2"},"name":{"S":"John Smith"},"age":{"N":"28"}}'
+        --item '{"id":{"S":"2"},"name":{"S":"John Smith"},"age":{"N":"28"},"department":{"S":"Marketing"},"position":{"S":"Marketing Manager"}}'
     aws dynamodb put-item --table-name workshi-2025-tma-BackendDynamoDB \
-        --item '{"id":{"S":"3"},"name":{"S":"山田太郎"},"age":{"N":"27"}}'
+        --item '{"id":{"S":"3"},"name":{"S":"山田太郎"},"age":{"N":"27"},"department":{"S":"Sales"},"position":{"S":"Sales Representative"}}'
 fi
