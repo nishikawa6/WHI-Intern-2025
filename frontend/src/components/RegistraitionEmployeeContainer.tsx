@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 interface EmployeeFormData {
   name: string;
   age: number;
+  department: string;
+  position: string;
 }
 
 export function RegistrationEmployeeContainer() {
@@ -61,12 +63,43 @@ export function RegistrationEmployeeContainer() {
         {errors.age && (
           <Typography color="error">{errors.age.message}</Typography>
         )}
+        <br />
+        <Typography variant="h6">部署：</Typography>
+        <TextField
+          {...register("department", { required: "部署は必須です" })}
+          placeholder="部署を入力してください"
+          fullWidth
+        />
+        {errors.department && (
+          <Typography color="error">{errors.department.message}</Typography>
+        )}
+        <br />
+        <Typography variant="h6">役職：</Typography>
+        <TextField
+          {...register("position", { required: "役職は必須です" })}
+          placeholder="役職を入力してください"
+          fullWidth
+        />
+        {errors.position && (
+          <Typography color="error">{errors.position.message}</Typography>
+        )}
       </Box>
       <button
         style={{
           backgroundColor:
-            watch("name") && watch("age") ? "rgb(60, 131, 212)" : "lightgray",
-          color: watch("name") && watch("age") ? "white" : "disabled",
+            watch("name") &&
+            watch("age") &&
+            watch("department") &&
+            watch("position")
+              ? "rgb(60, 131, 212)"
+              : "lightgray",
+          color:
+            watch("name") &&
+            watch("age") &&
+            watch("department") &&
+            watch("position")
+              ? "white"
+              : "disabled",
           padding: "10px 20px",
           border: "none",
           borderRadius: "4px",
@@ -94,7 +127,12 @@ export function RegistrationEmployeeContainer() {
             window.location.href = "/";
           }
         })}
-        disabled={!watch("name") || !watch("age")}
+        disabled={
+          !watch("name") ||
+          !watch("age") ||
+          !watch("department") ||
+          !watch("position")
+        }
       >
         登録
       </button>

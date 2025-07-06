@@ -59,6 +59,8 @@ app.post("/api/employee/registration", async (req: Request, res: Response) => {
     id: newEmployeeId,
     name: employee.name,
     age: Number(employee.age),
+    department: employee.department,
+    position: employee.position,
   };
   console.log("newEmployeeId", newEmployeeId, "newEmployee", newEmployee);
   database.addEmployee(newEmployeeId, newEmployee);
