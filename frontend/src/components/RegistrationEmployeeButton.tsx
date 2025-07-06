@@ -9,7 +9,7 @@ export function RegisterationEmployeeButton() {
         sx={{
           transition: "background-color 0.2s",
           "&:hover": {
-            backgroundColor: "#f0f0f0",
+            backgroundColor: (theme) => theme.palette.action.hover,
           },
         }}
       >

@@ -14,6 +14,8 @@ export function GlobalFooter() {
         gap: 4,
         px: 8,
         py: 1,
+        backgroundColor: "#ffffff !important",
+        color: "#000000 !important",
       }}
     >
       <Button
