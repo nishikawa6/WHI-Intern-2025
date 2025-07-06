@@ -10,7 +10,9 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { EmployeeListContainer } from "./EmployeeListContainer";
+import { RegisterationEmployeeButton } from "./RegistrationEmployeeButton";
 import { Employee } from "../models/Employee";
+
 
 export function SearchEmployees() {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -49,7 +51,7 @@ export function SearchEmployees() {
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
-
+      <RegisterationEmployeeButton />
       <Box sx={{ display: "flex", gap: 2 }}>
         <FormControl fullWidth>
           <InputLabel>部署</InputLabel>
@@ -83,7 +85,6 @@ export function SearchEmployees() {
           </Select>
         </FormControl>
       </Box>
-
       <EmployeeListContainer
         key="employeesContainer"
         filterText={searchKeyword}
