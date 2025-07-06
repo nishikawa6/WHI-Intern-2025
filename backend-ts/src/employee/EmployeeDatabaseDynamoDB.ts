@@ -30,10 +30,18 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     if (item == null) {
       return;
     }
+    
+    // 必須フィールドの存在チェック
+    if (!item["name"]?.S) {
+      throw new Error(`Employee ${id} is missing required field 'name'`);
+    }
+    
     const employee = {
       id: id,
-      name: item["name"].S,
-      age: mapNullable(item["age"].N, (value) => parseInt(value, 10)),
+      name: item["name"]?.S ?? "",//不正なデータはスキップ(undefinedは空文字に変換)
+      age: mapNullable(item["age"]?.N, (value) => parseInt(value, 10)),
+      department: item["department"]?.S ?? "",
+      position: item["position"]?.S ?? "",
     };
     const decoded = EmployeeT.decode(employee);
     if (isLeft(decoded)) {
@@ -56,15 +64,21 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     }
     return items
       .filter((item) => {
+        // nameフィールドが存在しないデータはスキップ
+        if (!item["name"]?.S) {
+          return false;
+        }
         const name = (item["name"]?.S ?? "").toLowerCase();
         const keyword = filterText.toLowerCase();
         return keyword === "" || name.includes(keyword);
       })
       .map((item) => {
         return {
-          id: item["id"].S,
-          name: item["name"].S,
-          age: mapNullable(item["age"].N, (value) => parseInt(value, 10)),
+          id: item["id"]?.S ?? "",
+          name: item["name"]?.S ?? "",
+          age: mapNullable(item["age"]?.N, (value) => parseInt(value, 10)),
+          department: item["department"]?.S ?? "",
+          position: item["position"]?.S ?? "",
         };
       })
       .flatMap((employee) => {
