@@ -26,7 +26,7 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
   }
 
   async addEmployee(employeeId: string, employee: Employee): Promise<void> {
-    this.employees.set(employee.id, employee);
+    this.employees.set(employeeId, employee);
     console.log("employees:", this.employees);
   }
 }
