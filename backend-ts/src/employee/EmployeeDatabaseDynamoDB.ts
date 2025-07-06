@@ -32,6 +32,12 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     if (item == null) {
       return;
     }
+
+    // 必須フィールドの存在チェック
+    if (!item["name"]?.S) {
+      throw new Error(`Employee ${id} is missing required field 'name'`);
+    }
+
     const employee = {
       id: id,
       name: item["name"].S || "",
@@ -60,6 +66,10 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     }
     return items
       .filter((item) => {
+        // nameフィールドが存在しないデータはスキップ
+        if (!item["name"]?.S) {
+          return false;
+        }
         const name = (item["name"]?.S ?? "").toLowerCase();
         const keyword = filterText.toLowerCase();
         return keyword === "" || name.includes(keyword);
