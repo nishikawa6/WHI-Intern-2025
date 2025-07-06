@@ -58,6 +58,8 @@ app.post("/api/employee/registration", async (req: Request, res: Response) => {
     id: newEmployeeId,
     name: employee.name,
     age: Number(employee.age),
+    department: employee.department,
+    position: employee.position,
   };
   database.addEmployee(newEmployeeId, newEmployee);
   // 登録完了のレスポンス
