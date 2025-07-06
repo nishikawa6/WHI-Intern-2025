@@ -95,15 +95,18 @@ export const handle = async (
     // https://docs.aws.amazon.com/ja_jp/lambda/latest/dg/urls-invocation.html
     const path = normalizePath(event.requestContext.http.path);
     const query = event.queryStringParameters;
+    console.log("path", path);
     if (path === "/api/employees") {
+      console.log(
+        "Getting employees with filterText:",
+        query?.filterText ?? ""
+      );
       return getEmployeesHandler(database, query?.filterText ?? "");
     } else if (path.startsWith("/api/employees/")) {
+      console.log("Getting an employee by ID");
       const id = path.substring("/api/employees/".length);
       return getEmployeeHandler(database, id);
-    } else if (
-      path === "/api/employee/registration" &&
-      event.requestContext.http.method === "POST"
-    ) {
+    } else if (path === "/api/employee/registration") {
       console.log("Adding a new employee");
       const body = event.body || "";
       return addEmployeeHandler(database, body);
@@ -111,6 +114,7 @@ export const handle = async (
       console.log("Invalid path", path);
       return { statusCode: 400 };
     }
+    console.log("Request processed successfully");
   } catch (e) {
     console.error("Internal Server Error", e);
     return {
