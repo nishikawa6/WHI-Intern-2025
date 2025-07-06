@@ -53,14 +53,12 @@ app.post("/api/employee/registration", async (req: Request, res: Response) => {
     res.status(400).send("Employee data is required.");
     return;
   }
-  console.log("employee", employee);
   const newEmployeeId = uuidv5(employee.name + employee.age, NAMESPACE_UUID);
   const newEmployee = {
     id: newEmployeeId,
     name: employee.name,
     age: Number(employee.age),
   };
-  console.log("newEmployeeId", newEmployeeId, "newEmployee", newEmployee);
   database.addEmployee(newEmployeeId, newEmployee);
   // 登録完了のレスポンス
   res.status(201).send(JSON.stringify(newEmployee));
