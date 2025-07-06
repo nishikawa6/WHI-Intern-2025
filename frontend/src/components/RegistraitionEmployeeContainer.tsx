@@ -2,6 +2,8 @@
 import PersonIcon from "@mui/icons-material/Person";
 import { Avatar, Box, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import Snackbar from "@mui/material/Snackbar";
+import { useState } from "react";
 
 interface EmployeeFormData {
   name: string;
@@ -9,6 +11,9 @@ interface EmployeeFormData {
 }
 
 export function RegistrationEmployeeContainer() {
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const {
     register,
     watch,
@@ -75,7 +80,10 @@ export function RegistrationEmployeeContainer() {
         }}
         onClick={handleSubmit(async (data: EmployeeFormData) => {
           console.log("登録データ:", data);
-          // ここでAPIにデータを送信する処理を追加
+          setIsOpenSnackbar(true);
+          setIsSubmitting(true);
+          setIsSuccess(false);
+          // APIにデータを送信
           const response = await fetch("/api/employee/registration", {
             method: "POST",
             headers: {
@@ -83,21 +91,47 @@ export function RegistrationEmployeeContainer() {
             },
             body: JSON.stringify(data),
           });
+          console.log("APIレスポンス:", response);
           if (!response.ok) {
             const errorData = await response.json();
             console.error("登録に失敗しました:", errorData);
-            alert("登録に失敗しました: " + errorData.message);
+            setIsSubmitting(false);
+            setIsSuccess(false);
           } else {
             console.log("登録成功");
-            alert("登録が成功しました");
-            // /に移動
-            window.location.href = "/";
+            setIsSuccess(true);
+            setIsSubmitting(false);
           }
         })}
         disabled={!watch("name") || !watch("age")}
       >
         登録
       </button>
+      <Snackbar
+        open={isOpenSnackbar && isSubmitting}
+        message="登録中..."
+        autoHideDuration={2000}
+        onClose={() => setIsSubmitting(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+      <Snackbar
+        open={isOpenSnackbar && !isSuccess}
+        message="登録に失敗しました"
+        autoHideDuration={2000}
+        onClick={() => {
+          setIsOpenSnackbar(false);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+      <Snackbar
+        open={isOpenSnackbar && isSuccess}
+        message="登録が成功しました"
+        autoHideDuration={2000}
+        onClose={() => {
+          setIsOpenSnackbar(false);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Paper>
   );
 }

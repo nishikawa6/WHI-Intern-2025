@@ -62,6 +62,8 @@ app.post("/api/employee/registration", async (req: Request, res: Response) => {
   };
   console.log("newEmployeeId", newEmployeeId, "newEmployee", newEmployee);
   database.addEmployee(newEmployeeId, newEmployee);
+  // 登録完了のレスポンス
+  res.status(201).send(JSON.stringify(newEmployee));
 });
 
 app.listen(port, () => {
