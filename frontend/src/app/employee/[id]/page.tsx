@@ -3,7 +3,6 @@ import { GlobalContainer } from "@/components/GlobalContainer";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import Link from "next/link";
-import { rgbToHex } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "社員詳細",
