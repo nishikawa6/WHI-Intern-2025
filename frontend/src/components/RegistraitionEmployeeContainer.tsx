@@ -13,6 +13,7 @@ interface EmployeeFormData {
 }
 
 interface EmployeeApiData {
+  id: string;
   name: string;
   age: number;
   department: string;
@@ -43,6 +44,7 @@ export function RegistrationEmployeeContainer() {
 
     // フォームデータをAPI用のデータに変換
     const apiData: EmployeeApiData = {
+      id: `emp-${Date.now()}`, // 一意のIDを生成
       name: data.name,
       age: parseInt(data.age, 10),
       department: data.department,
@@ -50,13 +52,26 @@ export function RegistrationEmployeeContainer() {
     };
 
     try {
+      // リクエストボディを文字列化
+      const bodyString = JSON.stringify(apiData);
+
+      // SHA256ハッシュを計算
+      const encoder = new TextEncoder();
+      const data_buffer = encoder.encode(bodyString);
+      const hash = await crypto.subtle.digest("SHA-256", data_buffer);
+      const hashArray = Array.from(new Uint8Array(hash));
+      const hashHex = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
       // APIにデータを送信
       const response = await fetch("/api/employee/registration", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-amz-content-sha256": hashHex,
         },
-        body: JSON.stringify(apiData),
+        body: bodyString,
       });
 
       // レスポンスのチェック
