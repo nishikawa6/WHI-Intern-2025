@@ -8,6 +8,8 @@ import { Employee, EmployeeT } from "../models/Employee";
 
 export type EmployeesContainerProps = {
   filterText: string;
+  selectedDepartment: string;
+  selectedPosition: string;
 };
 
 const EmployeesT = t.array(EmployeeT);
@@ -25,22 +27,42 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
   return decoded.right;
 };
 
-export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
+export function EmployeeListContainer({
+  filterText,
+  selectedDepartment,
+  selectedPosition,
+}: EmployeesContainerProps) {
   const encodedFilterText = encodeURIComponent(filterText);
   const { data, error, isLoading } = useSWR<Employee[], Error>(
     `/api/employees?filterText=${encodedFilterText}`,
     employeesFetcher
   );
+
   useEffect(() => {
     if (error != null) {
       console.error(`Failed to fetch employees filtered by filterText`, error);
     }
   }, [error, filterText]);
+
   if (data != null) {
-    return data.map((employee) => (
+    const filteredData = data.filter((employee) => {
+      if (
+        selectedDepartment !== "" &&
+        employee.department !== selectedDepartment
+      ) {
+        return false;
+      }
+      if (selectedPosition !== "" && employee.position !== selectedPosition) {
+        return false;
+      }
+      return true;
+    });
+
+    return filteredData.map((employee) => (
       <EmployeeListItem employee={employee} key={employee.id} />
     ));
   }
+
   if (isLoading) {
     return <p>Loading employees...</p>;
   }
