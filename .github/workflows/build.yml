@@ -1,0 +1,31 @@
+name: PreMerge Build
+
+on:
+  pull_request:
+    branches:
+      - main  # PRのターゲットブランチがmainの場合に動作する
+
+jobs:
+  pre-merge-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23'
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
+
+      - name: Build frontend
+        run: cd frontend && npm run build
+
+      - name: Install backend dependencies
+        run: cd backend && npm install
+
+      - name: Build backend
+        run: cd backend && npm run build
