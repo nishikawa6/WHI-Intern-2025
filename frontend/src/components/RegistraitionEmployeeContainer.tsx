@@ -7,6 +7,11 @@ import { useState } from "react";
 
 interface EmployeeFormData {
   name: string;
+  age: string;
+}
+
+interface EmployeeApiData {
+  name: string;
   age: number;
 }
 
@@ -18,8 +23,53 @@ export function RegistrationEmployeeContainer() {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<EmployeeFormData>();
+  } = useForm<EmployeeFormData>({
+    defaultValues: {
+      name: "",
+      age: "",
+    },
+  });
+
+  const onSubmit = async (data: EmployeeFormData) => {
+    setIsOpenSnackbar(true);
+    setIsSubmitting(true);
+    setIsSuccess(false);
+
+    // フォームデータをAPI用のデータに変換
+    const apiData: EmployeeApiData = {
+      name: data.name,
+      age: parseInt(data.age, 10),
+    };
+
+    try {
+      // APIにデータを送信
+      const response = await fetch("/api/employee/registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(apiData),
+      });
+
+      // レスポンスのチェック
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("登録に失敗しました:", errorData);
+        setIsSuccess(false);
+        setIsSubmitting(false);
+      } else {
+        reset({ name: "", age: "" }); // フォームをリセット
+        setIsSuccess(true);
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+      setIsSubmitting(false);
+      setIsSuccess(false);
+    }
+  };
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -62,6 +112,7 @@ export function RegistrationEmployeeContainer() {
           })}
           placeholder="年齢を入力してください"
           fullWidth
+          type="number"
         />
         {errors.age && (
           <Typography color="error">{errors.age.message}</Typography>
@@ -78,31 +129,7 @@ export function RegistrationEmployeeContainer() {
           cursor: "pointer",
           marginTop: "20px",
         }}
-        onClick={handleSubmit(async (data: EmployeeFormData) => {
-          console.log("登録データ:", data);
-          setIsOpenSnackbar(true);
-          setIsSubmitting(true);
-          setIsSuccess(false);
-          // APIにデータを送信
-          const response = await fetch("/api/employee/registration", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-          console.log("APIレスポンス:", response);
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.error("登録に失敗しました:", errorData);
-            setIsSubmitting(false);
-            setIsSuccess(false);
-          } else {
-            console.log("登録成功");
-            setIsSuccess(true);
-            setIsSubmitting(false);
-          }
-        })}
+        onClick={handleSubmit(onSubmit)}
         disabled={!watch("name") || !watch("age")}
       >
         登録
