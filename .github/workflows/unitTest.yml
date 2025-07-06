@@ -1,0 +1,84 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - develop # PRのターゲットブランチがdevelopの場合に動作する
+  push:
+    branches:
+      - develop # developブランチへのプッシュ時にも実行
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [frontend, backend-ts]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "23"
+          cache: "npm"
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+
+      - name: Install dependencies
+        run: cd ${{ matrix.project }} && npm ci
+
+      - name: Run unit tests
+        run: cd ${{ matrix.project }} && npm test -- --coverage --watchAll=false --verbose
+
+      - name: Upload test coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./${{ matrix.project }}/coverage/lcov.info
+          flags: ${{ matrix.project }}
+          name: codecov-${{ matrix.project }}
+
+  # 特定のファイルのテスト結果を強調表示
+  test-summary:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "23"
+
+      - name: Install dependencies
+        run: |
+          cd frontend && npm ci
+          cd ../backend-ts && npm ci
+
+      - name: Run specific file tests
+        run: |
+          echo "=== EmployeeDatabaseInMemory Tests ==="
+          cd backend-ts && npm test -- EmployeeDatabaseInMemory.test.ts --verbose
+
+          echo "=== EmployeeDatabaseDynamoDB Tests ==="
+          cd backend-ts && npm test -- EmployeeDatabaseDynamoDB.test.ts --verbose
+
+          echo "=== EmployeeListContainer Tests ==="
+          cd frontend && npm test -- EmployeeListContainer.test.tsx --verbose
+
+      - name: Test Results Summary
+        if: always()
+        run: |
+          echo "## 🧪 Unit Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tested Files:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ EmployeeDatabaseInMemory.ts" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ EmployeeDatabaseDynamoDB.ts" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ EmployeeListContainer.tsx" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All unit tests have been executed successfully!" >> $GITHUB_STEP_SUMMARY

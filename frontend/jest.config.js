@@ -10,6 +10,20 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   testEnvironment: 'jsdom',
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/.next/',
+    '/out/',
+    '/dist/'
+  ],
+  testMatch: [
+    '**/__tests__/**/*.tsx',
+    '**/?(*.)+(spec|test).tsx'
+  ],
+  verbose: true
 };
 
 module.exports = createJestConfig(customJestConfig);
