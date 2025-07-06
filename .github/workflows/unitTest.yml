@@ -66,10 +66,10 @@ jobs:
           cd backend-ts && npm test -- EmployeeDatabaseInMemory.test.ts --verbose
 
           echo "=== EmployeeDatabaseDynamoDB Tests ==="
-          cd backend-ts && npm test -- EmployeeDatabaseDynamoDB.test.ts --verbose
+          npm test -- EmployeeDatabaseDynamoDB.test.ts --verbose
 
           echo "=== EmployeeListContainer Tests ==="
-          cd frontend && npm test -- EmployeeListContainer.test.tsx --verbose
+          cd ../frontend && npm test -- EmployeeListContainer.test.tsx --verbose
 
       - name: Test Results Summary
         if: always()
